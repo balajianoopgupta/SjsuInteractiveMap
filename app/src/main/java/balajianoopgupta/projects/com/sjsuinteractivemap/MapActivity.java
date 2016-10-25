@@ -3,8 +3,14 @@ package balajianoopgupta.projects.com.sjsuinteractivemap;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
@@ -18,19 +24,73 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements  LocationListener {
 
     private ArrayAdapter<String> adapter;
     public final static String BUILDING="balajianoopgupta.projects.com.sjsuinteractivemap";
+    LocationManager locationManager;
+    String provider;
+    Location location;
 
+    @Override
+    public void onLocationChanged(Location location) {
+
+        Log.i("Status","In onLocationChanged");
+
+        //2. Get the current location
+        Double lat = location.getLatitude();
+        Double lng = location.getLongitude();
+
+        Log.i("Status", "Latitude is: "+ lat.toString());
+        Log.i("Status", "Longitude is: "+ lng.toString());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        //1. Initialize the locationManager and the provider
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        provider = locationManager.getBestProvider(new Criteria(), false); //To return only enabled providers
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if(location != null){
+            onLocationChanged(location);
+        }
+
+
 
         View myMap = (View) findViewById(R.id.map);
         myMap.setOnTouchListener(new View.OnTouchListener() {
