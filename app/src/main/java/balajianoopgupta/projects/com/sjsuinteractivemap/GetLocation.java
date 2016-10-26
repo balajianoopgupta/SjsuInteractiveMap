@@ -5,6 +5,8 @@ package balajianoopgupta.projects.com.sjsuinteractivemap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -15,6 +17,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Objects;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -23,11 +27,11 @@ import okhttp3.Response;
 /**
  * Created by rahilvora on 10/25/16.
  */
-public class GetLocation extends AsyncTask<String, Void, String> {
+public class GetLocation extends AsyncTask<String, Void, JSONObject> {
     String key = "AIzaSyB8kqDkrqZ3ScAi7s6a-fT_Dw9OKx6Zqdw";
     String urlBase = "http://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=";
     @Override
-    protected String doInBackground(String... params) {
+    protected JSONObject doInBackground(String... params) {
         String lato = params[0];
         String lngo = params[1];
         String latd = params[2];
@@ -65,14 +69,36 @@ public class GetLocation extends AsyncTask<String, Void, String> {
 
         }
         catch (IOException e){
-
+            Log.i("Exception", e.toString());
         }
-        Log.i("output",mJsonResults.toString());
-        return mJsonResults.toString();
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(mJsonResults.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObj;
     }
 
-    @Override
-    protected void onPostExecute(String s) {
+
+    protected void onPostExecute(JSONObject s) {
         super.onPostExecute(s);
+        Object obj = null;
+        if(s != null){
+            try{
+                //JSONArray arr = s.getJSONArray("rows");
+                JSONObject elements = s.getJSONArray("rows").getJSONObject(0);
+                JSONArray arrElement = elements.getJSONArray("elements");
+                JSONObject distDur = arrElement.getJSONObject(0);
+                JSONObject distance = distDur.getJSONObject("distance");
+                JSONObject duration = distDur.getJSONObject("duration");
+                obj = (Object) distDur;
+            }
+            catch (Exception e){
+
+            }
+        }
+        BuildingDetailActivity.receiver.obtainMessage(1,obj).sendToTarget();
     }
 }

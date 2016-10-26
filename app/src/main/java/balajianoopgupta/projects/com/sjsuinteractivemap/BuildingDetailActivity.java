@@ -3,18 +3,23 @@ package balajianoopgupta.projects.com.sjsuinteractivemap;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class BuildingDetailActivity extends AppCompatActivity {
     BuildingDetails[] buildings = new BuildingDetails[6];
-    TextView buildingName,buildingAddress,travelDistance;
+    TextView buildingName,buildingAddress;
+    static TextView travelDistance;
     ImageView buildingImage;
     float[] location;
 
@@ -71,14 +76,14 @@ public class BuildingDetailActivity extends AppCompatActivity {
     }
 
     public void displayBuildingDetails(BuildingDetails value){
-        String out = "Hello";
+        JSONObject out = null;
         buildingName.setText((CharSequence)value.getName());
         buildingAddress.setText("Address: "+(CharSequence)value.getAddress());
         int imgId = getResources().getIdentifier(value.photo,null,null);
         buildingImage.setImageResource(imgId);
         try{
-            out = new GetLocation().execute(String.valueOf(location[0]),String.valueOf(location[1]),String.valueOf(value.getLat()), String.valueOf(value.getLng())).get();
-            Log.i("Sample",out);
+            new GetLocation().execute(String.valueOf(location[0]),String.valueOf(location[1]),String.valueOf(value.getLat()), String.valueOf(value.getLng())).get();
+            //Log.i("Sample",out.toString());
         }
         catch (InterruptedException e){
 
@@ -87,4 +92,21 @@ public class BuildingDetailActivity extends AppCompatActivity {
 
         }
     }
+
+    public static android.os.Handler receiver = new android.os.Handler(){
+        public void handleMessage(Message msg){
+            Log.i("FInally",String.valueOf(msg.what));
+            try {
+                JSONObject jsonObject = new JSONObject(String.valueOf(msg.obj));
+                String time = jsonObject.getJSONObject("duration").getString("text");
+                String distance = jsonObject.getJSONObject("distance").getString("text");
+                //travelDistance.setText(String.valueOf(distance));
+                travelDistance.setText("Travel distance: "+String.valueOf(distance)+", Travel time: "+String.valueOf(time));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    };
 }
