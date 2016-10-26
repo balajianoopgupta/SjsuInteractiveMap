@@ -2,16 +2,21 @@ package balajianoopgupta.projects.com.sjsuinteractivemap;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 public class BuildingDetailActivity extends AppCompatActivity {
     BuildingDetails[] buildings = new BuildingDetails[6];
     TextView buildingName,buildingAddress,travelDistance;
     ImageView buildingImage;
+    float[] location;
 
 
     @Override
@@ -27,10 +32,13 @@ public class BuildingDetailActivity extends AppCompatActivity {
         buildingImage = (ImageView) findViewById(R.id.buildingImage);
 
         Intent i = getIntent();
-        String value = i.getStringExtra(MapActivity.BUILDING);
-        Log.i("building",String.valueOf(value));
+        String building = i.getExtras().getString("Building");
+        location = i.getExtras().getFloatArray("Location");
+        //new GetLocation().execute(String.valueOf(location[0]),String.valueOf(location[1]));
+        //new GetLocation().execute();
+        Log.i("building",String.valueOf(building));
 
-        switch (value){
+        switch (building){
             case "king": Log.i("building","Switch KING");
                 displayBuildingDetails(buildings[0]);
                 break;
@@ -63,11 +71,20 @@ public class BuildingDetailActivity extends AppCompatActivity {
     }
 
     public void displayBuildingDetails(BuildingDetails value){
-
+        String out = "Hello";
         buildingName.setText((CharSequence)value.getName());
         buildingAddress.setText("Address: "+(CharSequence)value.getAddress());
         int imgId = getResources().getIdentifier(value.photo,null,null);
         buildingImage.setImageResource(imgId);
+        try{
+            out = new GetLocation().execute(String.valueOf(location[0]),String.valueOf(location[1]),String.valueOf(value.getLat()), String.valueOf(value.getLng())).get();
+            Log.i("Sample",out);
+        }
+        catch (InterruptedException e){
 
+        }
+        catch (ExecutionException e) {
+
+        }
     }
 }
