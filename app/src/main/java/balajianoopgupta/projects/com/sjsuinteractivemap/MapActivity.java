@@ -99,11 +99,12 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
             public boolean onTouch(View v, MotionEvent event) {
 
                 String text = "You click at x = " + event.getX() + " and y = " + event.getY();
-                Toast.makeText(MapActivity.this, text, Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapActivity.this, text, Toast.LENGTH_LONG).show();
                 float xValue = event.getX();
                 float yValue = event.getY();
                 Log.i("Coordinates","X:"+xValue);
                 Log.i("Coordinates","Y:"+yValue);
+
                 Intent building = new Intent(MapActivity.this,BuildingDetailActivity.class);
                 Bundle data = new Bundle();
                 float[] arr = new float[2];
@@ -111,41 +112,53 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
                 arr[1] = (float) location.getLongitude();
                 data.putFloatArray("Location",arr);
                 building.putExtra(LOCATION,location);
+
                 if( (xValue>=730 && xValue<=940) && (yValue>=590 && yValue<=900)){
                     Toast.makeText(MapActivity.this, "Engineering", Toast.LENGTH_SHORT).show();
                     data.putString("Building","eng");
+                    building.putExtras(data);
+                    startActivity(building);
                     //building.putExtra(BUILDING,"eng");
                 }
                 else if( (xValue>=160 && xValue<=280) && (yValue>=590 && yValue<=830)){
                     Toast.makeText(MapActivity.this, "Kings Library", Toast.LENGTH_SHORT).show();
                     data.putString("Building","king");
+                    building.putExtras(data);
+                    startActivity(building);
                     //building.putExtra(BUILDING,"king");
                 }
                 else if( (xValue>=1150 && xValue<=1300) && (yValue>=1080 && yValue<=1230)){
                     Toast.makeText(MapActivity.this, "BBC", Toast.LENGTH_SHORT).show();
                     data.putString("Building","bbc");
+                    building.putExtras(data);
+                    startActivity(building);
                     //building.putExtra(BUILDING,"bbc");
                 }
                 else if( (xValue>=135 && xValue<=275) && (yValue>=1225 && yValue<=1425)){
                     Toast.makeText(MapActivity.this, "Yoshihiro", Toast.LENGTH_SHORT).show();
                     data.putString("Building","yoshihiro");
+                    building.putExtras(data);
+                    startActivity(building);
                     //building.putExtra(BUILDING,"yoshihiro");
                 }
                 else if( (xValue>=723 && xValue<=915) && (yValue>=950 && yValue<=1060)){
                     Toast.makeText(MapActivity.this, "Student Union", Toast.LENGTH_SHORT).show();
                     data.putString("Building","union");
+                    building.putExtras(data);
+                    startActivity(building);
                     //building.putExtra(BUILDING,"union");
                 }
                 else if( (xValue>=115 && xValue<=180) && (yValue>=1540 && yValue<=1950)){
                     Toast.makeText(MapActivity.this, "South Parking", Toast.LENGTH_SHORT).show();
                     data.putString("Building","parking");
+                    building.putExtras(data);
+                    startActivity(building);
                     //building.putExtra(BUILDING,"parking");
                 }
                 else{
                     //Do Nothing when clicked outside any of the boundaries mentioned above
                 }
-                building.putExtras(data);
-                startActivity(building);
+
                 return true;
             }
         });
@@ -200,8 +213,6 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
 
         return super.onCreateOptionsMenu(menu);
     }
-
-
 
     public void handleIntent(Intent intent){
         // Get the intent, verify the action and get the query
