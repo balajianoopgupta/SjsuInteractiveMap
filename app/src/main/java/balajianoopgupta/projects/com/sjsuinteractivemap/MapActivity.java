@@ -102,8 +102,8 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
                 //Toast.makeText(MapActivity.this, text, Toast.LENGTH_LONG).show();
                 float xValue = event.getX();
                 float yValue = event.getY();
-                Log.i("Coordinates","X:"+xValue);
-                Log.i("Coordinates","Y:"+yValue);
+//                Log.i("Coordinates","X:"+xValue);
+//                Log.i("Coordinates","Y:"+yValue);
 
                 Intent building = new Intent(MapActivity.this,BuildingDetailActivity.class);
                 Bundle data = new Bundle();
@@ -148,7 +148,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
                     startActivity(building);
                     //building.putExtra(BUILDING,"union");
                 }
-                else if( (xValue>=115 && xValue<=180) && (yValue>=1540 && yValue<=1950)){
+                else if( (xValue>=430 && xValue<=700) && (yValue>=1710 && yValue<=1950)){
                     Toast.makeText(MapActivity.this, "South Parking", Toast.LENGTH_SHORT).show();
                     data.putString("Building","parking");
                     building.putExtras(data);
