@@ -104,6 +104,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
                 float yValue = event.getY();
                 Log.i("Coordinates","X:"+xValue);
                 Log.i("Coordinates","Y:"+yValue);
+
                 Intent building = new Intent(MapActivity.this,BuildingDetailActivity.class);
                 Bundle data = new Bundle();
                 float[] arr = new float[2];
@@ -111,6 +112,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
                 arr[1] = (float) location.getLongitude();
                 data.putFloatArray("Location",arr);
                 building.putExtra(LOCATION,location);
+
                 if( (xValue>=730 && xValue<=940) && (yValue>=590 && yValue<=900)){
                     Toast.makeText(MapActivity.this, "Engineering", Toast.LENGTH_SHORT).show();
                     data.putString("Building","eng");
@@ -211,8 +213,6 @@ public class MapActivity extends AppCompatActivity implements  LocationListener 
 
         return super.onCreateOptionsMenu(menu);
     }
-
-
 
     public void handleIntent(Intent intent){
         // Get the intent, verify the action and get the query
