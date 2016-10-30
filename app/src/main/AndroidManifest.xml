@@ -30,7 +30,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".BuildingDetailActivity"></activity>
+        <activity android:name=".BuildingDetailActivity"
+            android:launchMode = "singleInstance"></activity>
     </application>
 
 </manifest>
