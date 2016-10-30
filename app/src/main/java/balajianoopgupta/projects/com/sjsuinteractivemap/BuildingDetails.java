@@ -6,7 +6,6 @@ package balajianoopgupta.projects.com.sjsuinteractivemap;
 
 public class BuildingDetails {
 
-    public String key;
     public String name;
     public String address;
     public String photo;
@@ -14,8 +13,7 @@ public class BuildingDetails {
 
 
 
-    public BuildingDetails(String bkey, String bname,String baddr, String bphoto, Double blat, Double blng){
-        this.key = bkey;
+    public BuildingDetails(String bname,String baddr, String bphoto, Double blat, Double blng){
         this.address = baddr;
         this.name=bname;
         this.photo = bphoto;

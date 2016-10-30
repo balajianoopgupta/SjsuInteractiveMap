@@ -12,7 +12,8 @@
         android:id="@+id/layout1"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="UselessParent">
 
         <ImageView
             android:id="@+id/buildingImage"
@@ -20,21 +21,21 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/search"
             android:contentDescription=""
-            android:layout_centerHorizontal="true"
             android:adjustViewBounds="true"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            tools:ignore="ContentDescription"
+            android:maxHeight="500dp" />
 
         <ImageButton
             app:srcCompat="@drawable/streetview"
             android:id="@+id/streetViewButton"
-            android:contentDescription="StreetViewButton"
+            android:contentDescription="@string/streetviewbutton"
             android:scaleType="fitXY"
-            android:layout_below="@+id/buildingDistance"
-            android:layout_centerHorizontal="true"
             android:layout_weight="1"
             android:layout_gravity="right"
             android:layout_width="60dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            tools:ignore="RtlHardcoded" />
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -46,7 +47,8 @@
                 android:id="@+id/layout2"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                tools:ignore="UselessParent">
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -58,32 +60,30 @@
                     <ImageView
                         android:id="@+id/pin"
                         app:srcCompat="@drawable/pin"
-                        android:contentDescription="Address"
+                        android:contentDescription="@string/address"
                         android:scaleType="centerCrop"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerHorizontal="true"
                         android:adjustViewBounds="false"
                         android:fitsSystemWindows="false"
                         android:cropToPadding="false"
                         android:layout_weight="1"
                         android:paddingLeft="20dp"
                         android:layout_height="60dp"
-                        android:layout_width="150dp" />
+                        android:layout_width="150dp"
+                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
 
                     <TextView
                         android:id="@+id/buildingAddress"
-                        android:layout_below="@+id/buildingImage"
-                        android:layout_toRightOf="@+id/pin"
                         android:text="@string/building_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAllCaps="false"
-                        android:layout_centerHorizontal="true"
                         android:layout_weight="1"
                         android:paddingTop="20dp"
                         android:textSize="18sp"
                         android:textColor="@color/cast_expanded_controller_background_color"
-                        android:paddingLeft="50dp" />
+                        android:paddingLeft="50dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry"
+                        android:paddingRight="20dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -96,30 +96,27 @@
                     <ImageView
                         android:id="@+id/dist"
                         app:srcCompat="@drawable/distance"
-                        android:contentDescription="Travel Distance"
+                        android:contentDescription="@string/travel_distance1"
                         android:scaleType="centerCrop"
-                        android:layout_alignTop="@+id/buildingDistance"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_weight="1"
                         android:paddingLeft="20dp"
                         android:layout_height="80dp"
-                        android:layout_width="200dp" />
+                        android:layout_width="200dp"
+                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
 
                     <TextView
                         android:id="@+id/buildingDistance"
-                        android:layout_below="@+id/buildingAddress"
-                        android:layout_toRightOf="@+id/dist"
                         android:text="@string/travel_distance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:textAllCaps="false"
-                        android:layout_centerHorizontal="true"
                         android:layout_weight="1"
                         android:textColor="@color/cast_expanded_controller_background_color"
                         android:textSize="18sp"
-                        android:paddingLeft="25dp" />
+                        android:paddingLeft="25dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry"
+                        android:paddingRight="20dp" />
 
                 </LinearLayout>
 
@@ -134,30 +131,27 @@
                     <ImageView
                         android:id="@+id/time"
                         app:srcCompat="@drawable/time"
-                        android:layout_below="@+id/dist"
-                        android:contentDescription="Travel Time"
+                        android:contentDescription="@string/travel_time"
                         android:scaleType="centerCrop"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentLeft="true"
                         android:layout_weight="1"
                         android:layout_height="60dp"
                         android:paddingLeft="20dp"
-                        android:layout_width="150dp" />
+                        android:layout_width="150dp"
+                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
 
                     <TextView
                         android:id="@+id/travelTime"
-                        android:layout_below="@+id/buildingDistance"
-                        android:layout_toRightOf="@+id/time"
                         android:text="@string/travel_distance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAllCaps="false"
-                        android:layout_centerHorizontal="true"
                         android:layout_weight="1"
                         android:textColor="@color/cast_expanded_controller_background_color"
                         android:textSize="18sp"
                         android:paddingLeft="50dp"
-                        android:paddingTop="20dp" />
+                        android:paddingTop="20dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry"
+                        android:paddingRight="20dp" />
                 </LinearLayout>
 
             </LinearLayout>
