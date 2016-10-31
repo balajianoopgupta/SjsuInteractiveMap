@@ -29,6 +29,7 @@
 
         <activity
             android:name=".BuildingDetailActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:launchMode="singleTask"
             android:parentActivityName="balajianoopgupta.projects.com.sjsuinteractivemap.MapActivity"/>
 
