@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -184,6 +185,10 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 
                 String item = (String) parent.getItemAtPosition(position);
                 Toast.makeText(MapActivity.this, "Option Selected: "+item, Toast.LENGTH_LONG).show();
+
+                //Hide keypad after selecting an option in the listView
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
     }
@@ -209,7 +214,6 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
             lv.setVisibility(View.VISIBLE);
             lv.bringToFront();
             adapter.notifyDataSetChanged();
-
         }
 
         return false;
