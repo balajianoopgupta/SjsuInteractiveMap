@@ -128,8 +128,9 @@ public class BuildingDetailActivity extends AppCompatActivity {
         arr[0] = loc[0];
         arr[1] = loc[1];
         data.putDoubleArray("Location",arr);
+        data.putString("Name",value.getName());
 
-        getSupportActionBar().setTitle(value.getName().trim());
+        getSupportActionBar().setTitle(value.getName());
         // buildingName.setText((CharSequence)value.getName());
         buildingAddress.setText((CharSequence) value.getAddress());
         int imgId = getResources().getIdentifier(value.photo, null, null);

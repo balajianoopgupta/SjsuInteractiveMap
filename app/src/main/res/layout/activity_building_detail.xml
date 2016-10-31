@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:textAllCaps="false"
                         android:layout_weight="1"
-                        android:paddingTop="20dp"
+                        android:paddingTop="10dp"
                         android:textSize="18sp"
                         android:textColor="@color/cast_expanded_controller_background_color"
                         android:paddingLeft="50dp"
