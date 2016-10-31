@@ -18,7 +18,7 @@ public class StreetViewActivity extends AppCompatActivity implements OnStreetVie
 
     Double lat;
     Double lng;
-
+    String buildingName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +26,7 @@ public class StreetViewActivity extends AppCompatActivity implements OnStreetVie
 
         Intent i = getIntent();
         location = i.getExtras().getDoubleArray("Location");
+        buildingName = i.getExtras().getString("Name");
         lat = location[0];
         lng = location[1];
 
@@ -37,6 +38,7 @@ public class StreetViewActivity extends AppCompatActivity implements OnStreetVie
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
+        getSupportActionBar().setTitle("Street View of "+buildingName);
 
         StreetViewPanoramaFragment streetViewPanoramaFragment =
                 (StreetViewPanoramaFragment) getFragmentManager()
