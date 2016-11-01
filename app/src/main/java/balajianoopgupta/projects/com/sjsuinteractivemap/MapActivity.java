@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,41 +42,24 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
     String[] arrayBuildings;
     View myMap;
 
+    static FrameLayout frame;
+    static DrawBuilding engineeringBuilding;
+    static DrawBuilding kingLibrary;
+    static DrawBuilding yoshiroHall;
+    static DrawBuilding studentUnion;
+    static DrawBuilding bbc;
+    static DrawBuilding southParking;
+    static DrawBuilding currentLocation;
+
     float top, bottom, left, right;
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-        Log.i("Status","In onLocationChanged");
-
-        //2. Get the current location
-        Double lat = location.getLatitude();
-        Double lng = location.getLongitude();
-
-        Log.i("Status", "Latitude is: "+ lat.toString());
-        Log.i("Status", "Longitude is: "+ lng.toString());
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         lv = (ListView) findViewById(R.id.listViewBuildings);
+
+        frame = (FrameLayout) findViewById(R.id.activity_map);
 
         myMap = (View) findViewById(R.id.map);
 
@@ -110,6 +94,11 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
                 left = myMap.getLeft();
                 right = myMap.getRight();
 
+                Log.i("Image:","Top: "+top);
+                Log.i("Image:","Bottom: "+bottom);
+                Log.i("Image:","Left: "+left);
+                Log.i("Image:","Right: "+right);
+
                 float xValue = event.getX();
                 float yValue = event.getY();
                 Log.i("Coordinates","X:"+xValue);
@@ -130,7 +119,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 //                    Toast.makeText(MapActivity.this, "Engineering", Toast.LENGTH_SHORT).show();
 //                    data.putString("Building","eng");
 //                }
-                if((xValue>=(0.50*right) && xValue<=(0.66*right)) && (yValue>=(0.27*bottom) && yValue<=(0.45*bottom))){
+                if((xValue>=(0.50*right) && xValue<=(0.66*right)) && (yValue>=(0.34*bottom) && yValue<=(0.45*bottom))){
                     Toast.makeText(MapActivity.this, "Engineering", Toast.LENGTH_SHORT).show();
                     data.putString("Building","eng");
                 }
@@ -146,7 +135,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 //                    Toast.makeText(MapActivity.this, "BBC", Toast.LENGTH_SHORT).show();
 //                    data.putString("Building","bbc");
 //                }
-                else if((xValue>=(0.80*right) && xValue<=(0.90*right)) && (yValue>=(0.5*bottom) && yValue<=(0.55*bottom))){
+                else if((xValue>=(0.80*right) && xValue<=(0.90*right)) && (yValue>=(0.51*bottom) && yValue<=(0.56*bottom))){
                     Toast.makeText(MapActivity.this, "BBC", Toast.LENGTH_SHORT).show();
                     data.putString("Building","bbc");
                 }
@@ -170,7 +159,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 //                    Toast.makeText(MapActivity.this, "South Parking", Toast.LENGTH_SHORT).show();
 //                    data.putString("Building","parking");
 //                }
-                else if((xValue>=(0.28*right) && xValue<=(0.48*right)) && (yValue>=(0.72*bottom) && yValue<=(0.81*bottom))){
+                else if((xValue>=(0.3*right) && xValue<=(0.48*right)) && (yValue>=(0.73*bottom) && yValue<=(0.81*bottom))){
                     Toast.makeText(MapActivity.this, "South Parking", Toast.LENGTH_SHORT).show();
                     data.putString("Building","parking");
                 }
@@ -184,6 +173,172 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
                 return true;
             }
         });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView =(SearchView) menu.findItem(R.id.menuSearch).getActionView();
+
+        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void handleItems() {
+        top = myMap.getTop();
+        bottom = myMap.getBottom();
+        left = myMap.getLeft();
+        right = myMap.getRight();
+
+//        Log.i("Image:","Top: "+top);
+//        Log.i("Image:","Bottom: "+bottom);
+//        Log.i("Image:","Left: "+left);
+//        Log.i("Image:","Right: "+right);
+
+        kingLibrary = new DrawBuilding(MapActivity.this, (float)(0.09*right), (float)(0.34*bottom), (float)(0.2*right), (float)(0.43*bottom));
+
+        engineeringBuilding = new DrawBuilding(MapActivity.this, (float)(0.51*right), (float)(0.34*bottom), (float)(0.66*right), (float)(0.45*bottom));
+
+        yoshiroHall = new DrawBuilding(MapActivity.this, (float)(0.09*right), (float)(0.56*bottom), (float)(0.2*right), (float)(0.63*bottom));
+
+        bbc = new DrawBuilding(MapActivity.this, (float)(0.8*right), (float)(0.51*bottom), (float)(0.9*right), (float)(0.56*bottom));
+
+        studentUnion = new DrawBuilding(MapActivity.this, (float)(0.51*right), (float)(0.46*bottom), (float)(0.64*right), (float)(0.5*bottom));
+
+        southParking = new DrawBuilding(MapActivity.this, (float)(0.30*right), (float)(0.73*bottom), (float)(0.48*right), (float)(0.81*bottom));
+
+        //Creating All the 6 buildings that we are searching
+        arrayBuildings = new String[]{"King Library","Engineering Building","Yoshihiro Uchida Hall","Student Union","BBC","South Parking Garage"};
+
+        //Copying all the buildings into removalList array and removing items when matched in search string
+        removalList = new ArrayList<>(Arrays.asList(arrayBuildings));
+
+        adapter = new ArrayAdapter<String>(MapActivity.this,android.R.layout.simple_list_item_1,removalList);
+
+        lv.setAdapter(adapter);
+        lv.setVisibility(View.INVISIBLE);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String item = (String) parent.getItemAtPosition(position);
+                Toast.makeText(MapActivity.this, "Option Selected: "+item, Toast.LENGTH_LONG).show();
+                
+                removeMarkings();
+                displayBuilding(item);
+
+                lv.setVisibility(View.INVISIBLE);
+
+                //Hide keypad after selecting an option in the listView
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        });
+    }
+
+    public static void removeMarkings() {
+
+        //((FrameLayout)frame.getParent()).removeView(kingLibrary);
+        frame.removeView(kingLibrary);
+        frame.removeView(engineeringBuilding);
+        frame.removeView(yoshiroHall);
+        frame.removeView(southParking);
+        frame.removeView(bbc);
+        frame.removeView(studentUnion);
+    }
+
+    private void displayBuilding(String item) {
+        removeMarkings();
+
+        if(item.toLowerCase().equals(arrayBuildings[0].toLowerCase())){
+            drawRectangle(kingLibrary);
+        }
+        else if(item.toLowerCase().equals(arrayBuildings[1].toLowerCase())){
+            drawRectangle(engineeringBuilding);
+        }
+        else if(item.toLowerCase().equals(arrayBuildings[2].toLowerCase())){
+            drawRectangle(yoshiroHall);
+        }
+        else if(item.toLowerCase().equals(arrayBuildings[3].toLowerCase())){
+            drawRectangle(studentUnion);
+        }
+        else if(item.toLowerCase().equals(arrayBuildings[4].toLowerCase())){
+            drawRectangle(bbc);
+        }
+        else{
+            drawRectangle(southParking);
+        }
+
+    }
+
+    private void drawRectangle(DrawBuilding building) {
+        frame.addView(building);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+        if(newText.isEmpty()){
+            handleItems();
+            removeMarkings();
+        }
+        else {
+
+            for (String str: arrayBuildings) {
+                    if(!(str.toLowerCase().contains(newText.toLowerCase()))){
+                        removalList.remove(str);
+                    }
+            }
+            lv.setVisibility(View.VISIBLE);
+            lv.bringToFront();
+            adapter.notifyDataSetChanged();
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        Log.i("Status","In onLocationChanged");
+
+        //2. Get the current location
+        Double lat = location.getLatitude();
+        Double lng = location.getLongitude();
+
+        Log.i("Status", "Latitude is: "+ lat.toString());
+        Log.i("Status", "Longitude is: "+ lng.toString());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     public void displayScreenValues(){
@@ -225,74 +380,5 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         Log.i("Screen", "orientation  = " + orientation);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        SearchView searchView =(SearchView) menu.findItem(R.id.menuSearch).getActionView();
-
-        searchView.setOnQueryTextListener((SearchView.OnQueryTextListener) this);
-
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-
-    private void handleItems() {
-
-        arrayBuildings = new String[]{"King Library","Engineering Building","Yoshihiro Uchida Hall","Student Union","BBC","South Parking Garage"};
-        //Copying all the buildings into removalList array and removing items when matched in search string
-        removalList = new ArrayList<>(Arrays.asList(arrayBuildings));
-
-        adapter = new ArrayAdapter<String>(MapActivity.this,android.R.layout.simple_list_item_1,removalList);
-
-        lv.setAdapter(adapter);
-        lv.setVisibility(View.INVISIBLE);
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String item = (String) parent.getItemAtPosition(position);
-                Toast.makeText(MapActivity.this, "Option Selected: "+item, Toast.LENGTH_LONG).show();
-
-                //Hide keypad after selecting an option in the listView
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
-        });
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-
-        if(newText.isEmpty()){
-            handleItems();
-        }
-        else {
-
-            for (String str: arrayBuildings) {
-                    if(!(str.toLowerCase().contains(newText.toLowerCase()))){
-                        removalList.remove(str);
-                    }
-            }
-            lv.setVisibility(View.VISIBLE);
-            lv.bringToFront();
-            adapter.notifyDataSetChanged();
-        }
-
-        return false;
-    }
 }
