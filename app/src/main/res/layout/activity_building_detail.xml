@@ -13,7 +13,9 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="UselessParent">
+        tools:ignore="UselessParent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <ImageView
             android:id="@+id/buildingImage"
@@ -25,17 +27,6 @@
             android:layout_weight="1"
             tools:ignore="ContentDescription"
             android:maxHeight="500dp" />
-
-        <ImageButton
-            app:srcCompat="@drawable/streetview"
-            android:id="@+id/streetViewButton"
-            android:contentDescription="@string/streetviewbutton"
-            android:scaleType="fitXY"
-            android:layout_weight="1"
-            android:layout_gravity="right"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            tools:ignore="RtlHardcoded" />
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -61,15 +52,14 @@
                         android:id="@+id/pin"
                         app:srcCompat="@drawable/pin"
                         android:contentDescription="@string/address"
-                        android:scaleType="centerCrop"
+                        android:scaleType="fitCenter"
                         android:adjustViewBounds="false"
                         android:fitsSystemWindows="false"
                         android:cropToPadding="false"
                         android:layout_weight="1"
-                        android:paddingLeft="20dp"
-                        android:layout_height="60dp"
-                        android:layout_width="150dp"
-                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
+                        android:layout_height="80dp"
+                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry"
+                        android:layout_width="125dp" />
 
                     <TextView
                         android:id="@+id/buildingAddress"
@@ -78,10 +68,10 @@
                         android:layout_height="wrap_content"
                         android:textAllCaps="false"
                         android:layout_weight="1"
-                        android:paddingTop="10dp"
+                        android:paddingTop="20dp"
                         android:textSize="18sp"
                         android:textColor="@color/cast_expanded_controller_background_color"
-                        android:paddingLeft="50dp"
+                        android:paddingLeft="20dp"
                         tools:ignore="RtlHardcoded,RtlSymmetry"
                         android:paddingRight="20dp" />
                 </LinearLayout>
@@ -91,18 +81,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:paddingTop="10dp">
+                    android:paddingTop="10dp"
+                    android:id="@+id/layout4">
 
                     <ImageView
                         android:id="@+id/dist"
                         app:srcCompat="@drawable/distance"
                         android:contentDescription="@string/travel_distance1"
-                        android:scaleType="centerCrop"
+                        android:scaleType="fitCenter"
                         android:layout_weight="1"
-                        android:paddingLeft="20dp"
+                        android:paddingLeft="10dp"
                         android:layout_height="80dp"
-                        android:layout_width="200dp"
-                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
+                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry"
+                        android:layout_width="125dp" />
 
                     <TextView
                         android:id="@+id/buildingDistance"
@@ -114,64 +105,69 @@
                         android:layout_weight="1"
                         android:textColor="@color/cast_expanded_controller_background_color"
                         android:textSize="18sp"
-                        android:paddingLeft="25dp"
+                        android:paddingLeft="20dp"
                         tools:ignore="RtlHardcoded,RtlSymmetry"
-                        android:paddingRight="20dp" />
+                        android:paddingRight="20dp"
+                        android:paddingTop="20dp" />
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
+                <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:paddingTop="10dp"
-                    android:layout_marginTop="20dp">
+                    android:layout_weight="1" >
 
-                    <ImageView
-                        android:id="@+id/time"
-                        app:srcCompat="@drawable/time"
-                        android:contentDescription="@string/travel_time"
-                        android:scaleType="centerCrop"
-                        android:layout_weight="1"
-                        android:layout_height="60dp"
-                        android:paddingLeft="20dp"
-                        android:layout_width="150dp"
-                        tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
-
-                    <TextView
-                        android:id="@+id/travelTime"
-                        android:text="@string/travel_distance"
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAllCaps="false"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textColor="@color/cast_expanded_controller_background_color"
-                        android:textSize="18sp"
-                        android:paddingLeft="50dp"
-                        android:paddingTop="20dp"
-                        tools:ignore="RtlHardcoded,RtlSymmetry"
-                        android:paddingRight="20dp" />
-                </LinearLayout>
+                        android:paddingTop="10dp"
+                        android:layout_marginTop="20dp"
+                        android:id="@+id/layout5">
+
+                        <ImageView
+                            android:id="@+id/time"
+                            app:srcCompat="@drawable/time"
+                            android:contentDescription="@string/travel_time"
+                            android:scaleType="fitCenter"
+                            android:layout_weight="1"
+                            android:layout_height="60dp"
+                            android:paddingLeft="20dp"
+                            tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry"
+                            android:layout_width="125dp" />
+
+                        <TextView
+                            android:id="@+id/travelTime"
+                            android:text="@string/travel_distance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAllCaps="false"
+                            android:layout_weight="1.75"
+                            android:textColor="@color/cast_expanded_controller_background_color"
+                            android:textSize="18sp"
+                            android:paddingLeft="20dp"
+                            android:paddingTop="20dp"
+                            tools:ignore="RtlHardcoded,RtlSymmetry"
+                            android:paddingRight="20dp" />
+
+                        <ImageButton
+                            app:srcCompat="@drawable/streetview"
+                            android:id="@+id/streetViewButton"
+                            android:contentDescription="@string/streetviewbutton"
+                            android:scaleType="fitCenter"
+                            android:layout_weight="0.25"
+                            android:layout_gravity="right"
+                            tools:ignore="RtlHardcoded"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp" />
+                    </LinearLayout>
+                </RadioGroup>
 
             </LinearLayout>
 
         </RadioGroup>
 
     </LinearLayout>
-
-    <!--Pin Image-->
-
-    <!--Building Address-->
-
-    <!--Travel Distance Image-->
-
-    <!--Travel Distance-->
-
-    <!--Travel Time Image-->
-
-    <!--Travel Time -->
-
-    <!--Street View Button-->
 
 </RelativeLayout>
