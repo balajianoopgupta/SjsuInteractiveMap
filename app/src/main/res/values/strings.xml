@@ -8,13 +8,5 @@
     <string name="address">Address</string>
     <string name="travel_distance1">Travel Distance</string>
     <string name="travel_time">Travel Time</string>
-    <string-array name="array_buildings">
-        <item>King Library</item>
-        <item>Engineering Building</item>
-        <item>Yoshihiro Uchida Hall</item>
-        <item>Student Union</item>
-        <item>BBC</item>
-        <item>South Parking Garage</item>
-    </string-array>
     <string name="title_activity_maps">Map</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -12,7 +13,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
@@ -36,7 +39,9 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
     ArrayList<String> removalList;
     ListView lv;
     String[] arrayBuildings;
+    View myMap;
 
+    float top, bottom, left, right;
 
     @Override
     public void onLocationChanged(Location location) {
@@ -72,6 +77,10 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         setContentView(R.layout.activity_map);
         lv = (ListView) findViewById(R.id.listViewBuildings);
 
+        myMap = (View) findViewById(R.id.map);
+
+        //displayScreenValues();
+
         //1. Initialize the locationManager and the provider
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         provider = locationManager.getBestProvider(new Criteria(), false); //To return only enabled providers
@@ -92,17 +101,22 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
             onLocationChanged(location);
         }
 
-
-
-        View myMap = (View) findViewById(R.id.map);
         myMap.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
+                top = myMap.getTop();
+                bottom = myMap.getBottom();
+                left = myMap.getLeft();
+                right = myMap.getRight();
+
                 float xValue = event.getX();
                 float yValue = event.getY();
-//                Log.i("Coordinates","X:"+xValue);
-//                Log.i("Coordinates","Y:"+yValue);
+                Log.i("Coordinates","X:"+xValue);
+                Log.i("Coordinates","Y:"+yValue);
+
+                Log.i("Coordinates","New X:" +xValue/right);
+                Log.i("Coordinates","New Y:" +yValue/bottom);
 
                 Intent building = new Intent(MapActivity.this,BuildingDetailActivity.class);
                 Bundle data = new Bundle();
@@ -112,27 +126,51 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
                 data.putFloatArray("Location",arr);
                 building.putExtra(LOCATION,location);
 
-                if( (xValue>=730 && xValue<=940) && (yValue>=590 && yValue<=900)){
+//                if( (xValue>=730 && xValue<=940) && (yValue>=590 && yValue<=900)){
+//                    Toast.makeText(MapActivity.this, "Engineering", Toast.LENGTH_SHORT).show();
+//                    data.putString("Building","eng");
+//                }
+                if((xValue>=(0.50*right) && xValue<=(0.66*right)) && (yValue>=(0.27*bottom) && yValue<=(0.45*bottom))){
                     Toast.makeText(MapActivity.this, "Engineering", Toast.LENGTH_SHORT).show();
                     data.putString("Building","eng");
                 }
-                else if( (xValue>=160 && xValue<=280) && (yValue>=590 && yValue<=830)){
+//                else if( (xValue>=160 && xValue<=280) && (yValue>=590 && yValue<=830)){
+//                    Toast.makeText(MapActivity.this, "Kings Library", Toast.LENGTH_SHORT).show();
+//                    data.putString("Building","king");
+//                }
+                else if((xValue>=(0.10*right) && xValue<=(0.2*right)) && (yValue>=(0.34*bottom) && yValue<=(0.425*bottom))){
                     Toast.makeText(MapActivity.this, "Kings Library", Toast.LENGTH_SHORT).show();
                     data.putString("Building","king");
                 }
-                else if( (xValue>=1150 && xValue<=1300) && (yValue>=1080 && yValue<=1230)){
+//                else if( (xValue>=1150 && xValue<=1300) && (yValue>=1080 && yValue<=1230)){
+//                    Toast.makeText(MapActivity.this, "BBC", Toast.LENGTH_SHORT).show();
+//                    data.putString("Building","bbc");
+//                }
+                else if((xValue>=(0.80*right) && xValue<=(0.90*right)) && (yValue>=(0.5*bottom) && yValue<=(0.55*bottom))){
                     Toast.makeText(MapActivity.this, "BBC", Toast.LENGTH_SHORT).show();
                     data.putString("Building","bbc");
                 }
-                else if( (xValue>=135 && xValue<=275) && (yValue>=1225 && yValue<=1425)){
+//                else if( (xValue>=135 && xValue<=275) && (yValue>=1225 && yValue<=1425)){
+//                    Toast.makeText(MapActivity.this, "Yoshihiro", Toast.LENGTH_SHORT).show();
+//                    data.putString("Building","yoshihiro");
+//                }
+                else if((xValue>=(0.09*right) && xValue<=(0.20*right)) && (yValue>=(0.56*bottom) && yValue<=(0.63*bottom))){
                     Toast.makeText(MapActivity.this, "Yoshihiro", Toast.LENGTH_SHORT).show();
                     data.putString("Building","yoshihiro");
                 }
-                else if( (xValue>=723 && xValue<=915) && (yValue>=950 && yValue<=1060)){
+//                else if( (xValue>=723 && xValue<=915) && (yValue>=950 && yValue<=1060)){
+//                    Toast.makeText(MapActivity.this, "Student Union", Toast.LENGTH_SHORT).show();
+//                    data.putString("Building","union");
+//                }
+                else if((xValue>=(0.49*right) && xValue<=(0.63*right)) && (yValue>=(0.45*bottom) && yValue<=(0.5*bottom))){
                     Toast.makeText(MapActivity.this, "Student Union", Toast.LENGTH_SHORT).show();
                     data.putString("Building","union");
                 }
-                else if( (xValue>=430 && xValue<=700) && (yValue>=1710 && yValue<=1950)){
+//                else if( (xValue>=430 && xValue<=700) && (yValue>=1710 && yValue<=1950)){
+//                    Toast.makeText(MapActivity.this, "South Parking", Toast.LENGTH_SHORT).show();
+//                    data.putString("Building","parking");
+//                }
+                else if((xValue>=(0.28*right) && xValue<=(0.48*right)) && (yValue>=(0.72*bottom) && yValue<=(0.81*bottom))){
                     Toast.makeText(MapActivity.this, "South Parking", Toast.LENGTH_SHORT).show();
                     data.putString("Building","parking");
                 }
@@ -146,6 +184,45 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
                 return true;
             }
         });
+    }
+
+    public void displayScreenValues(){
+
+        Display display = getWindowManager().getDefaultDisplay();
+        String displayName = display.getName();  // minSdkVersion=17+
+        Log.i("Screen", "displayName  = " + displayName);
+
+        // display size in pixels
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        Log.i("Screen", "width        = " + width);
+        Log.i("Screen", "height       = " + height);
+
+        // pixels, dpi
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int heightPixels = metrics.heightPixels;
+        int widthPixels = metrics.widthPixels;
+        int densityDpi = metrics.densityDpi;
+        float xdpi = metrics.xdpi;
+        float ydpi = metrics.ydpi;
+        Log.i("Screen", "widthPixels  = " + widthPixels);
+        Log.i("Screen", "heightPixels = " + heightPixels);
+        Log.i("Screen", "densityDpi   = " + densityDpi);
+        Log.i("Screen", "xdpi         = " + xdpi);
+        Log.i("Screen", "ydpi         = " + ydpi);
+
+        // deprecated
+        int screenHeight = display.getHeight();
+        int screenWidth = display.getWidth();
+        Log.i("Screen", "screenHeight = " + screenHeight);
+        Log.i("Screen", "screenWidth  = " + screenWidth);
+
+        // orientation (either ORIENTATION_LANDSCAPE, ORIENTATION_PORTRAIT)
+        int orientation = getResources().getConfiguration().orientation;
+        Log.i("Screen", "orientation  = " + orientation);
     }
 
     @Override
