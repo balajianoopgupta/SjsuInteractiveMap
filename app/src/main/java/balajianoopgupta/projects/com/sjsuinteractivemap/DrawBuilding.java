@@ -63,11 +63,6 @@ class DrawBuilding extends ImageView {
             paint.setStrokeWidth(10);
             canvas.drawRect(x1, y1, x2, y2, paint);
         }
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(10);
-        canvas.drawRect(x1, y1, x2, y2, paint);
 
     }
 

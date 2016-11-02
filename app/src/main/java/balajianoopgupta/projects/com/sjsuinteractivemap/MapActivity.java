@@ -60,6 +60,9 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //mCustomDrawableView = new CustomDrawableView(this);
+        setContentView(R.layout.activity_map);
+
+
         target = new Location("");
         upperLeft = new Location("");
         upperRight = new Location("");
@@ -70,15 +73,11 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         upperRight.setLatitude(37.338751);
         upperRight.setLongitude(-121.879703);
 
-        target.setLatitude(37.335894);
-        target.setLongitude(-121.882672);
 
-        setContentView(R.layout.activity_map);
         calc_xy(595.0, target, upperLeft, upperRight);
         lowerRight.setLatitude(37.334556);
         lowerRight.setLongitude(-121.876701);
-//        target.setLatitude(37.335894);
-//        target.setLongitude(-121.882672);
+
 
 
         setContentView(R.layout.activity_map);
@@ -212,12 +211,12 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 
 
         double [] values = new double[2];
-        values = calc_xy(1400, target, upperLeft, upperRight);
+        values = calc_xy(585, target, upperLeft, upperRight);
         //values = test(target, upperLeft, upperRight);
         final double xValue =  values[0];
         final double yValue =  values[1];
-        final double x = getCurrentPixelX(upperLeft, lowerRight, target) + 144;
-        final double y = getCurrentPixelY(upperLeft, lowerRight, target) + 1208;
+        final double x = getCurrentPixelX(upperLeft, lowerRight, target) + 25;
+        final double y = getCurrentPixelY(upperLeft, lowerRight, target) + 175;
 
         final ImageButton locationButton = (ImageButton) findViewById(R.id.locationButton);
         locationButton.setOnClickListener(new View.OnClickListener() {
@@ -229,9 +228,9 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
                 left = myMap.getLeft();
                 right = myMap.getRight();
 
-                double xPix = x;//- (0.03*right);
+                double xPix = xValue;//- (0.03*right);
                 //getCurrentPixelX(upperLeft, lowerRight, location);
-                double yPix = y; //- (0.31 * bottom); //getCurrentPixelY(upperLeft, lowerRight, location);
+                double yPix = yValue; //- (0.31 * bottom); //getCurrentPixelY(upperLeft, lowerRight, location);
 
                 currentLocation = new DrawBuilding(MapActivity.this, (float)xPix, (float)yPix);
                 frame.addView(currentLocation);
