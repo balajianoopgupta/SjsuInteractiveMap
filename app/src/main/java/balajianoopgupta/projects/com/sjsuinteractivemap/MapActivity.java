@@ -50,13 +50,27 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
     static DrawBuilding bbc;
     static DrawBuilding southParking;
     static DrawBuilding currentLocation;
-
+    static CustomDrawableView mCustomDrawableView;
     float top, bottom, left, right;
+    double imageSize;
+    Location target, upperLeft,  upperRight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //mCustomDrawableView = new CustomDrawableView(this);
+        target = new Location("");
+        upperLeft = new Location("");
+        upperRight = new Location("");
+        upperLeft.setLatitude(37.335822);
+        upperLeft.setLongitude(-121.886025);
+        upperRight.setLatitude(37.338751);
+        upperRight.setLongitude(-121.879703);
+        target.setLatitude(37.335894);
+        target.setLongitude(-121.882672);
+
         setContentView(R.layout.activity_map);
+        calc_xy(595.0, target, upperLeft, upperRight);
         lv = (ListView) findViewById(R.id.listViewBuildings);
 
         frame = (FrameLayout) findViewById(R.id.activity_map);
@@ -84,6 +98,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         if(location != null){
             onLocationChanged(location);
         }
+
 
         myMap.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -175,6 +190,97 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         });
     }
 
+
+    public void adjustLocation(){
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+
+        double  topleftlat = 37.335815, topleftlng = -121.885970,
+                toprightlat = 37.338644, toprightlng = -121.879714,
+                bottomrightlat = 37.334699, bottomrightlng = -121.876576,
+                bottomleftlat = 37.331698, bottomleftlng = -121.882796;
+
+    }
+    public static double[] calc_xy (double imageSize, Location target, Location upperLeft, Location upperRight) {
+        double newAngle = -1;
+        try {
+            double angle = calc_radian(upperRight.getLongitude(), upperRight.getLatitude(),
+                    upperLeft.getLongitude(), upperLeft.getLatitude(),
+                    target.getLongitude(), target.getLatitude());
+            newAngle = 180-angle;
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        double upperLeft_Target_dist = upperLeft.distanceTo(target);
+
+        double upperLeft_Right_dist = upperLeft.distanceTo(upperRight);
+        double distancePerPx = imageSize /upperLeft_Right_dist;
+
+        double distance = upperLeft_Target_dist * distancePerPx;
+
+        double radian = newAngle * Math.PI/180;
+
+        double[] result = radToPixel(distance, radian);
+        return result;
+    }
+
+    public static double[] radToPixel(double distance, double radian) {
+        double[] result = {-1,-1};
+        result[0] = distance * Math.cos(radian) + 25;
+        result[1] = distance * Math.sin(radian) + 175;
+        return result;
+    }
+
+    public static double calc_radian(Double x1, Double y1, Double x2, Double y2, Double x3, Double y3)
+            throws Exception{
+
+        double rad = 0.0;
+
+        if((Double.compare(x1, x2) == 0 && Double.compare(y1, y2) == 0) ||
+                (Double.compare(x3, x2) == 0 && Double.compare(y3, y2) == 0))
+        {
+            return rad;
+        }
+
+    /* compute vector */
+        double BAx = x2 - x1;
+        double BAy = y2 - y1;
+
+        double BCx = x3 - x2;
+        double BCy = y3 - y2;
+
+        double cosA =  BAx / Math.sqrt( BAx * BAx + BAy * BAy ) ;
+        double cosC =  BCx / Math.sqrt( BCx * BCx + BCy * BCy ) ;
+
+        double radA = Math.acos( cosA ) * 180.0 / Math.PI ;
+        double radC = Math.acos( cosC ) * 180.0 / Math.PI ;
+        if( BAy < 0.0 )
+        {
+            radA = radA * -1.0 ;
+        }
+        if( BCy < 0.0 )
+        {
+            radC = radC * -1.0 ;
+        }
+
+        rad = radC - radA ;
+
+
+        if( rad > 180.0 )
+        {
+            rad = rad - 360;
+        }
+
+        if( rad < -180.0 )
+        {
+            rad = rad + 360;
+        }
+
+        return rad ;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
