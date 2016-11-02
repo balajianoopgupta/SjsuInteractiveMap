@@ -38,7 +38,7 @@ public class StreetViewActivity extends AppCompatActivity implements OnStreetVie
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
-        getSupportActionBar().setTitle("Street View of "+buildingName);
+        getSupportActionBar().setTitle(buildingName);
 
         StreetViewPanoramaFragment streetViewPanoramaFragment =
                 (StreetViewPanoramaFragment) getFragmentManager()

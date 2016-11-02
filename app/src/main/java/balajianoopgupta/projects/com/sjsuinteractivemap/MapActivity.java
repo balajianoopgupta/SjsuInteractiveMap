@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -50,10 +51,10 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
     static DrawBuilding bbc;
     static DrawBuilding southParking;
     static DrawBuilding currentLocation;
-    static CustomDrawableView mCustomDrawableView;
-    float top, bottom, left, right;
+
+    static float top, bottom, left, right;
     double imageSize;
-    Location target, upperLeft,  upperRight;
+    Location target, upperLeft,  upperRight, lowerRight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +63,27 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         target = new Location("");
         upperLeft = new Location("");
         upperRight = new Location("");
+        lowerRight = new Location("");
+
         upperLeft.setLatitude(37.335822);
         upperLeft.setLongitude(-121.886025);
         upperRight.setLatitude(37.338751);
         upperRight.setLongitude(-121.879703);
+
         target.setLatitude(37.335894);
         target.setLongitude(-121.882672);
 
         setContentView(R.layout.activity_map);
         calc_xy(595.0, target, upperLeft, upperRight);
+        lowerRight.setLatitude(37.334556);
+        lowerRight.setLongitude(-121.876701);
+//        target.setLatitude(37.335894);
+//        target.setLongitude(-121.882672);
+
+
+        setContentView(R.layout.activity_map);
+
+
         lv = (ListView) findViewById(R.id.listViewBuildings);
 
         frame = (FrameLayout) findViewById(R.id.activity_map);
@@ -188,19 +201,67 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
                 return true;
             }
         });
+
+
+        target.setLatitude(location.getLatitude());
+        target.setLongitude(location.getLongitude());
+
+        Log.i("Target","Lat:"+target.getLatitude());
+        Log.i("Target","Lng:"+target.getLongitude());
+        //37.334556, -121.876701
+
+
+        double [] values = new double[2];
+        values = calc_xy(1400, target, upperLeft, upperRight);
+        //values = test(target, upperLeft, upperRight);
+        final double xValue =  values[0];
+        final double yValue =  values[1];
+        final double x = getCurrentPixelX(upperLeft, lowerRight, target) + 144;
+        final double y = getCurrentPixelY(upperLeft, lowerRight, target) + 1208;
+
+        final ImageButton locationButton = (ImageButton) findViewById(R.id.locationButton);
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                top = myMap.getTop();
+                bottom = myMap.getBottom();
+                left = myMap.getLeft();
+                right = myMap.getRight();
+
+                double xPix = x;//- (0.03*right);
+                //getCurrentPixelX(upperLeft, lowerRight, location);
+                double yPix = y; //- (0.31 * bottom); //getCurrentPixelY(upperLeft, lowerRight, location);
+
+                currentLocation = new DrawBuilding(MapActivity.this, (float)xPix, (float)yPix);
+                frame.addView(currentLocation);
+            }
+        });
     }
 
+    public double getCurrentPixelY(Location upperLeft, Location lowerRight, Location current) {
+        double hypotenuse = upperLeft.distanceTo(current);
+        double bearing = upperLeft.bearingTo(current);
+        double currentDistanceY = Math.cos(bearing * Math.PI / 180.0d) * hypotenuse;
+        //                           "percentage to mark the position"
+        double totalHypotenuse = upperLeft.distanceTo(lowerRight);
+        double totalDistanceY = totalHypotenuse * Math.cos(upperLeft.bearingTo(lowerRight) * Math.PI / 180.0d);
+        double currentPixelY = currentDistanceY / totalDistanceY * 2108;
 
-    public void adjustLocation(){
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-
-        double  topleftlat = 37.335815, topleftlng = -121.885970,
-                toprightlat = 37.338644, toprightlng = -121.879714,
-                bottomrightlat = 37.334699, bottomrightlng = -121.876576,
-                bottomleftlat = 37.331698, bottomleftlng = -121.882796;
-
+        return currentPixelY;
     }
+    public double getCurrentPixelX(Location upperLeft, Location lowerRight, Location current) {
+        double hypotenuse = upperLeft.distanceTo(current);
+        double bearing = upperLeft.bearingTo(current);
+        double currentDistanceX = Math.sin(bearing * Math.PI / 180.0d) * hypotenuse;
+        //                           "percentage to mark the position"
+        double totalHypotenuse = upperLeft.distanceTo(lowerRight);
+        double totalDistanceX = totalHypotenuse * Math.sin(upperLeft.bearingTo(lowerRight) * Math.PI / 180.0d);
+        double currentPixelX = currentDistanceX / totalDistanceX * 1440;
+
+        return currentPixelX;
+    }
+
     public static double[] calc_xy (double imageSize, Location target, Location upperLeft, Location upperRight) {
         double newAngle = -1;
         try {
@@ -229,8 +290,9 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 
     public static double[] radToPixel(double distance, double radian) {
         double[] result = {-1,-1};
-        result[0] = distance * Math.cos(radian) + 25;
-        result[1] = distance * Math.sin(radian) + 175;
+        result[0] = distance * Math.cos(radian) + 25;//(0.03*right);
+        result[1] = distance * Math.sin(radian) + 175;//(0.31*bottom);
+
         return result;
     }
 
@@ -340,7 +402,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 
                 String item = (String) parent.getItemAtPosition(position);
                 Toast.makeText(MapActivity.this, "Option Selected: "+item, Toast.LENGTH_LONG).show();
-                
+
                 removeMarkings();
                 displayBuilding(item);
 
@@ -407,9 +469,9 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         else {
 
             for (String str: arrayBuildings) {
-                    if(!(str.toLowerCase().contains(newText.toLowerCase()))){
-                        removalList.remove(str);
-                    }
+                if(!(str.toLowerCase().contains(newText.toLowerCase()))){
+                    removalList.remove(str);
+                }
             }
             lv.setVisibility(View.VISIBLE);
             lv.bringToFront();
@@ -485,6 +547,4 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         int orientation = getResources().getConfiguration().orientation;
         Log.i("Screen", "orientation  = " + orientation);
     }
-
-
 }

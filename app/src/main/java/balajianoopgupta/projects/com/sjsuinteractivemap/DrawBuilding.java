@@ -21,6 +21,10 @@ class DrawBuilding extends ImageView {
     float x2;
     float y2;
 
+    float xPix;
+    float yPix;
+    boolean location;
+
     public DrawBuilding(Context context) {
         super(context);
     }
@@ -34,11 +38,31 @@ class DrawBuilding extends ImageView {
         this.y2 = y2;
     }
 
+    public DrawBuilding(Context context, float xPix, float yPix) {
+        super(context);
+        MapActivity.removeMarkings();
+        this.xPix = xPix;
+        this.yPix = yPix;
+        location = true;
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //  removeDrawViews();
 
+        if(location){
+            Paint paint = new Paint();
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(xPix, yPix, 25, paint);
+        }
+        else {
+            Paint paint = new Paint();
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(10);
+            canvas.drawRect(x1, y1, x2, y2, paint);
+        }
         Paint paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
