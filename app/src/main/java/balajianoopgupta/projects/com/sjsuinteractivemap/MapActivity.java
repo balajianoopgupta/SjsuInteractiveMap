@@ -54,7 +54,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
 
     static float top, bottom, left, right;
     double imageSize;
-    Location target, upperLeft,  upperRight, lowerRight;
+    Location upperLeft,  upperRight, lowerLeft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,21 +62,22 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         //mCustomDrawableView = new CustomDrawableView(this);
         setContentView(R.layout.activity_map);
 
-
-        target = new Location("");
         upperLeft = new Location("");
         upperRight = new Location("");
-        lowerRight = new Location("");
+        lowerLeft = new Location("");
 
+        //King Library
         upperLeft.setLatitude(37.335822);
-        upperLeft.setLongitude(-121.886025);
-        upperRight.setLatitude(37.338751);
-        upperRight.setLongitude(-121.879703);
+        upperLeft.setLongitude(-121.885976);
+
+        //Northern Side of University
+        upperRight.setLatitude(37.338789);
+        upperRight.setLongitude(-121.879744);
 
 
-        calc_xy(595.0, target, upperLeft, upperRight);
-        lowerRight.setLatitude(37.334556);
-        lowerRight.setLongitude(-121.876701);
+        //calc_xy(595.0, target, upperLeft, upperRight);
+        lowerLeft.setLatitude(37.331579);
+        lowerLeft.setLongitude(-121.882820);
 
 
 
@@ -111,6 +112,8 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
             onLocationChanged(location);
         }
 
+        Log.i("Location","Lat: "+location.getLatitude());
+        Log.i("Location","Lng: "+location.getLongitude());
 
         myMap.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -202,146 +205,88 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         });
 
 
-        target.setLatitude(location.getLatitude());
-        target.setLongitude(location.getLongitude());
-
-        Log.i("Target","Lat:"+target.getLatitude());
-        Log.i("Target","Lng:"+target.getLongitude());
-        //37.334556, -121.876701
-
-
-        double [] values = new double[2];
-        values = calc_xy(585, target, upperLeft, upperRight);
-        //values = test(target, upperLeft, upperRight);
-        final double xValue =  values[0];
-        final double yValue =  values[1];
-        final double x = getCurrentPixelX(upperLeft, lowerRight, target) + 25;
-        final double y = getCurrentPixelY(upperLeft, lowerRight, target) + 175;
-
         final ImageButton locationButton = (ImageButton) findViewById(R.id.locationButton);
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                provider = locationManager.getBestProvider(new Criteria(), false); //To return only enabled providers
+
+                if (ActivityCompat.checkSelfPermission(MapActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                location = locationManager.getLastKnownLocation(provider);
+
+                if(location != null){
+                    onLocationChanged(location);
+                }
+
+                Log.i("Location","Lat: "+location.getLatitude());
+                Log.i("Location","Lng: "+location.getLongitude());
 
                 top = myMap.getTop();
                 bottom = myMap.getBottom();
                 left = myMap.getLeft();
                 right = myMap.getRight();
 
-                double xPix = xValue;//- (0.03*right);
-                //getCurrentPixelX(upperLeft, lowerRight, location);
-                double yPix = yValue; //- (0.31 * bottom); //getCurrentPixelY(upperLeft, lowerRight, location);
+                removeMarkings();
 
-                currentLocation = new DrawBuilding(MapActivity.this, (float)xPix, (float)yPix);
+//                double a1 = calculateDistance(37.335822, -121.885976, location.getLatitude(), location.getLongitude());
+//                double a2 = calculateDistance(37.331579, -121.882820, location.getLatitude(), location.getLongitude());
+//                double King_West = calculateDistance(37.335822, -121.885976, 37.331579, -121.882820 );
+//                double King_North = calculateDistance(37.335822, -121.885976, 37.338789, -121.879744);
+//                double newY = (Math.pow(a2,2)+Math.pow(0.3,2)-Math.pow(a1,2))/(2*0.3);
+
+                double a1 = calculateDistance(upperLeft.getLatitude(),upperLeft.getLongitude(), location.getLatitude(), location.getLongitude());
+                double a2 = calculateDistance(lowerLeft.getLatitude(),lowerLeft.getLongitude(), location.getLatitude(), location.getLongitude());
+                double King_West = calculateDistance(upperLeft.getLatitude(),upperLeft.getLongitude(), lowerLeft.getLatitude(),lowerLeft.getLongitude() );
+                double King_North = calculateDistance(upperLeft.getLatitude(),upperLeft.getLongitude(), upperRight.getLatitude(),upperRight.getLongitude());
+
+                double newY = (Math.pow(a2,2)+Math.pow(0.3,2)-Math.pow(a1,2))/(2*0.3);
+                Log.i("new Y","newY:"+newY);
+
+                double myX = Math.sqrt(Math.pow(a2,2)-Math.pow(newY,2));
+                Log.i("X","myX:"+myX);
+                double myY = King_West - newY;
+
+                double xPixels = (0.03*right) + (myX * 0.9 * right)/King_North ;
+                double yPixels = (0.32*bottom) + (myY * 0.5 * bottom)/King_West;
+
+                Log.i("Distance","xPixels: "+xPixels);
+                Log.i("Distance","yPixels: "+yPixels);
+
+                currentLocation = new DrawBuilding(MapActivity.this, (float)xPixels, (float)yPixels);
                 frame.addView(currentLocation);
+
             }
         });
     }
 
-    public double getCurrentPixelY(Location upperLeft, Location lowerRight, Location current) {
-        double hypotenuse = upperLeft.distanceTo(current);
-        double bearing = upperLeft.bearingTo(current);
-        double currentDistanceY = Math.cos(bearing * Math.PI / 180.0d) * hypotenuse;
-        //                           "percentage to mark the position"
-        double totalHypotenuse = upperLeft.distanceTo(lowerRight);
-        double totalDistanceY = totalHypotenuse * Math.cos(upperLeft.bearingTo(lowerRight) * Math.PI / 180.0d);
-        double currentPixelY = currentDistanceY / totalDistanceY * 2108;
+    public double calculateDistance(double x1,double y1,double x2,double y2){
 
-        return currentPixelY;
-    }
-    public double getCurrentPixelX(Location upperLeft, Location lowerRight, Location current) {
-        double hypotenuse = upperLeft.distanceTo(current);
-        double bearing = upperLeft.bearingTo(current);
-        double currentDistanceX = Math.sin(bearing * Math.PI / 180.0d) * hypotenuse;
-        //                           "percentage to mark the position"
-        double totalHypotenuse = upperLeft.distanceTo(lowerRight);
-        double totalDistanceX = totalHypotenuse * Math.sin(upperLeft.bearingTo(lowerRight) * Math.PI / 180.0d);
-        double currentPixelX = currentDistanceX / totalDistanceX * 1440;
+        double lat1Radians = Math.toRadians(x1);
+        double lat2Radians = Math.toRadians(x2);
+        double diff1 = y2-y1;
+        double diff2 = Math.toRadians(diff1);
+        double myValue = Math.sin(lat1Radians) * Math.sin(lat2Radians) + Math.cos(lat1Radians) * Math.cos(lat2Radians) * Math.cos(diff2);
+        myValue = Math.acos(myValue);
+        myValue = Math.toDegrees(myValue);
+        myValue = myValue * 60 * 1.1515;
 
-        return currentPixelX;
+        return myValue;
     }
 
-    public static double[] calc_xy (double imageSize, Location target, Location upperLeft, Location upperRight) {
-        double newAngle = -1;
-        try {
-            double angle = calc_radian(upperRight.getLongitude(), upperRight.getLatitude(),
-                    upperLeft.getLongitude(), upperLeft.getLatitude(),
-                    target.getLongitude(), target.getLatitude());
-            newAngle = 180-angle;
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        double upperLeft_Target_dist = upperLeft.distanceTo(target);
-
-        double upperLeft_Right_dist = upperLeft.distanceTo(upperRight);
-        double distancePerPx = imageSize /upperLeft_Right_dist;
-
-        double distance = upperLeft_Target_dist * distancePerPx;
-
-        double radian = newAngle * Math.PI/180;
-
-        double[] result = radToPixel(distance, radian);
-        return result;
-    }
-
-    public static double[] radToPixel(double distance, double radian) {
-        double[] result = {-1,-1};
-        result[0] = distance * Math.cos(radian) + 25;//(0.03*right);
-        result[1] = distance * Math.sin(radian) + 175;//(0.31*bottom);
-
-        return result;
-    }
-
-    public static double calc_radian(Double x1, Double y1, Double x2, Double y2, Double x3, Double y3)
-            throws Exception{
-
-        double rad = 0.0;
-
-        if((Double.compare(x1, x2) == 0 && Double.compare(y1, y2) == 0) ||
-                (Double.compare(x3, x2) == 0 && Double.compare(y3, y2) == 0))
-        {
-            return rad;
-        }
-
-    /* compute vector */
-        double BAx = x2 - x1;
-        double BAy = y2 - y1;
-
-        double BCx = x3 - x2;
-        double BCy = y3 - y2;
-
-        double cosA =  BAx / Math.sqrt( BAx * BAx + BAy * BAy ) ;
-        double cosC =  BCx / Math.sqrt( BCx * BCx + BCy * BCy ) ;
-
-        double radA = Math.acos( cosA ) * 180.0 / Math.PI ;
-        double radC = Math.acos( cosC ) * 180.0 / Math.PI ;
-        if( BAy < 0.0 )
-        {
-            radA = radA * -1.0 ;
-        }
-        if( BCy < 0.0 )
-        {
-            radC = radC * -1.0 ;
-        }
-
-        rad = radC - radA ;
 
 
-        if( rad > 180.0 )
-        {
-            rad = rad - 360;
-        }
-
-        if( rad < -180.0 )
-        {
-            rad = rad + 360;
-        }
-
-        return rad ;
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -366,11 +311,6 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
         bottom = myMap.getBottom();
         left = myMap.getLeft();
         right = myMap.getRight();
-
-//        Log.i("Image:","Top: "+top);
-//        Log.i("Image:","Bottom: "+bottom);
-//        Log.i("Image:","Left: "+left);
-//        Log.i("Image:","Right: "+right);
 
         kingLibrary = new DrawBuilding(MapActivity.this, (float)(0.09*right), (float)(0.34*bottom), (float)(0.2*right), (float)(0.43*bottom));
 
@@ -400,7 +340,7 @@ public class MapActivity extends AppCompatActivity implements  LocationListener,
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String item = (String) parent.getItemAtPosition(position);
-                Toast.makeText(MapActivity.this, "Option Selected: "+item, Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapActivity.this, "Option Selected: "+item, Toast.LENGTH_LONG).show();
 
                 removeMarkings();
                 displayBuilding(item);
